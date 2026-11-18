@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Localização</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary: #e2e8f0;
+      --secondary-hover: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --success: #16a34a;
+      --error: #dc2626;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 460px;
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: var(--text-main);
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fff;
+      color: var(--text-main);
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .coords-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: background-color 0.2s, transform 0.1s, opacity 0.2s;
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .btn:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .btn-geo {
+      background-color: var(--secondary);
+      color: var(--text-main);
+      margin-bottom: 1.25rem;
+    }
+
+    .btn-geo:hover:not(:disabled) {
+      background-color: var(--secondary-hover);
+    }
+
+    .btn-submit {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background-color: var(--primary-hover);
+    }
+
+    .status-box {
+      margin-top: 1.25rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: none;
+      text-align: center;
+    }
+
+    .status-box.success {
+      display: block;
+      background-color: #dcfce7;
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-box.error {
+      display: block;
+      background-color: #fee2e2;
+      color: var(--error);
+      border: 1px solid #fecaca;
+    }
+
+    .status-box.info {
+      display: block;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    @media (max-width: 420px) {
+      .coords-grid {
+        grid-template-columns: 1fr;
+      }
+      .container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="container">
+    <div class="header">
+      <h1>Registro de Localização</h1>
+      <p>Preencha o local e capture as coordenadas para enviar</p>
+    </div>
+
+    <form id="customGoogleForm">
+      <div class="form-group">
+        <label for="local">Nome ou Descrição do Local *</label>
+        <input 
+          type="text" 
+          id="local" 
+          name="entry.1007208604" 
+          placeholder="Ex: Matriz, Ponto de Coleta A..." 
+          required 
+        />
+      </div>
+
+      <button type="button" id="btnGetLocation" class="btn btn-geo">
+        📍 Capturar Minha Localização Atual
+      </button>
+
+      <div class="coords-grid">
+        <div class="form-group">
+          <label for="latitude">Latitude *</label>
+          <input 
+            type="text" 
+            id="latitude" 
+            name="entry.271826468" 
+            placeholder="-23.550520" 
+            required 
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="longitude">Longitude *</label>
+          <input 
+            type="text" 
+            id="longitude" 
+            name="entry.215802484" 
+            placeholder="-46.633308" 
+            required 
+          />
+        </div>
+      </div>
+
+      <button type="submit" id="btnSubmit" class="btn btn-submit">
+        Enviar Dados
+      </button>
+
+      <div id="statusMessage" class="status-box" role="alert"></div>
+    </form>
+  </main>
+
+  <script>
+    (function () {
+      // Endpoint oficial de submissão extraído da URL do seu Google Forms
+      const GOOGLE_FORM_ACTION_URL =
+        "https://docs.google.com/forms/d/e/1FAIpQLSfuWLTc4od-TxcoouIXpJnMA3b-Dny9suSk8nVU5TO7qwjRog/formResponse";
+
+      const form = document.getElementById("customGoogleForm");
+      const btnGetLocation = document.getElementById("btnGetLocation");
+      const btnSubmit = document.getElementById("btnSubmit");
+      const statusMessage = document.getElementById("statusMessage");
+
+      const inputLocal = document.getElementById("local");
+      const inputLat = document.getElementById("latitude");
+      const inputLng = document.getElementById("longitude");
+
+      function showStatus(text, type) {
+        statusMessage.textContent = text;
+        statusMessage.className = `status-box ${type}`;
+      }
+
+      // 1. Preenchimento automático caso a URL do GitHub Pages receba parâmetros (?local=...&latitude=...&longitude=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("local")) inputLocal.value = urlParams.get("local");
+      if (urlParams.has("latitude")) inputLat.value = urlParams.get("latitude");
+      if (urlParams.has("longitude")) inputLng.value = urlParams.get("longitude");
+
+      // 2. Captura de Geolocalização via API nativa do navegador (requer HTTPS - nativo no GitHub Pages)
+      btnGetLocation.addEventListener("click", () => {
+        if (!("geolocation" in navigator)) {
+          showStatus("Seu navegador não suporta geolocalização.", "error");
+          return;
+        }
+
+        btnGetLocation.disabled = true;
+        btnGetLocation.textContent = "⏳ Obtendo coordenadas...";
+        showStatus("Solicitando permissão de GPS...", "info");
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            inputLat.value = position.coords.latitude.toFixed(6);
+            inputLng.value = position.coords.longitude.toFixed(6);
+            showStatus("Coordenadas capturadas com sucesso!", "success");
+            btnGetLocation.disabled = false;
+            btnGetLocation.textContent = "📍 Atualizar Localização";
+          },
+          (error) => {
+            let msg = "Não foi possível obter sua localização.";
+            if (error.code === error.PERMISSION_DENIED) {
+              msg = "Permissão de localização negada pelo usuário.";
+            } else if (error.code === error.POSITION_UNAVAILABLE) {
+              msg = "Sinal de GPS indisponível no momento.";
+            } else if (error.code === error.TIMEOUT) {
+              msg = "Tempo esgotado ao buscar localização.";
+            }
+            showStatus(msg, "error");
+            btnGetLocation.disabled = false;
+            btnGetLocation.textContent = "📍 Capturar Minha Localização Atual";
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      });
+
+      // 3. Envio assíncrono (AJAX) para o Google Forms
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = "Enviando...";
+        statusMessage.style.display = "none";
+
+        const formData = new URLSearchParams();
+        formData.append("entry.1007208604", inputLocal.value.trim());
+        formData.append("entry.271826468", inputLat.value.trim());
+        formData.append("entry.215802484", inputLng.value.trim());
+
+        try {
+          // O Google Forms não retorna headers CORS, por isso usamos mode: 'no-cors'.
+          // A requisição chega e grava na planilha normalmente.
+          await fetch(GOOGLE_FORM_ACTION_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData.toString()
+          });
+
+          showStatus("Registro enviado com sucesso para o formulário!", "success");
+          form.reset();
+        } catch (err) {
+          console.error("Erro ao enviar formulário:", err);
+          showStatus("Falha na conexão. Verifique sua internet e tente novamente.", "error");
+        } finally {
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = "Enviar Dados";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
