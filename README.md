@@ -37,4 +37,5 @@ git clone https://github.com/seu-usuario/seu-repositorio.git
 Abra o arquivo do notebook no VS Code, Jupyter ou faça upload no Google Colab.
 Execute as células em ordem para ler os dados da planilha e ver as saídas das requisições em tempo real.
 
-Desenvolvido com 💙 por [redacted link].
+Desenvolvido com 💙 por  www.linkedin.com/in/thaisporcari e https://github.com/ThaisPorcari
+
